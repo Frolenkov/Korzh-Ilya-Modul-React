@@ -1,0 +1,14 @@
+.AsidePanel{
+  display: flex;
+  flex-direction: column;
+  background-color: #0F263D;
+  width: 200px;
+  height: 100vh;
+  padding: 20px;
+
+}
+.category{
+  color: #1A7E95;
+  text-decoration: none;
+  padding-bottom: 20px;
+}
