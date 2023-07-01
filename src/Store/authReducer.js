@@ -24,8 +24,8 @@ export function authReducer(state = {}, { type, token }) {
   return state;
 }
 
-const actionAuthLogin = token => ({ type: 'AUTH_LOGIN', token });
-const actionAuthLogout = () => ({ type: 'AUTH_LOGOUT' });
+export const actionAuthLogin = token => ({ type: 'AUTH_LOGIN', token });
+export const actionAuthLogout = () => ({ type: 'AUTH_LOGOUT' });
 
 
 

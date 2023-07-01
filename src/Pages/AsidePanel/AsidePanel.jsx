@@ -4,7 +4,7 @@ import style from './AsidePanel.module.css';
 import { rootCategories } from '../../api';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
-import { actionPromise } from '../../Store/promiseReducer';
+import { actionPromise } from '../../Store/actionPromise';
 import { useParams } from 'react-router';
 
 

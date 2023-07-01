@@ -1,47 +1,61 @@
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { actionPromise } from '../../Store/promiseReducer';
-import { registrationUser } from '../../api';
-import { Input } from '../../Components/Input';
+import { actionPromise } from '../../Store/actionPromise';
+import { loginUser, registrationUser } from '../../api';
+import style from "./RegistrationPage.module.css";
 
 export const RegistrationPages = () => {
   const [login, setLogin] = useState('');
-   const [password, setPassword] = useState('');
+  const [password, setPassword] = useState('');
   const [nick, setNick] = useState('');
-  const [toggle, setToggle] = useState(true);
+  const [showError, setShowError] = useState(false);
 
   const dispatch = useDispatch();
 
+  const state = useSelector((state) => state.promise);
+  const { status, payload } = state?.promiseRegistrationUser || {};
 
   const handleSubmit = () => {
-    setToggle(toggle => !toggle);
-
+    dispatch(actionPromise('promiseRegistrationUser', registrationUser(login, password, nick)));
   };
 
-  const category = useSelector(state => state?.promise.registrationUserPromise);
-  const { status, payload } = category || {};
-
-
   useEffect(() => {
-    if (payload?.errors?.length) {
-      console.log(category?.payload.errors[0].message);
-      console.log(category?.payload.errors);
+    if (payload?.data?.UserUpsert) {
+      dispatch(actionPromise('loginUserPromise', loginUser(login, password)));
     }
-    dispatch(actionPromise('registrationUserPromise', registrationUser(login, password,nick)));
-  }, [toggle]);
+    if (payload?.errors?.length > 0) {
+      setShowError(true);
+    }
 
 
+  }, [payload]);
 
 
+  const token = state?.loginUserPromise?.payload?.data?.login;
+  console.log(token);
 
-  return (<div>RegistrationPages
-      <input type="email" value={login} onChange={(e) => setLogin(e.target.value)} />
-      <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-      <input type="text" value={nick} onChange={(e) => setNick(e.target.value)} />
-      <button onClick={handleSubmit}>button</button>
-      {/*{ payload?.errors.length > 0 ? alert(category?.payload.errors[0].message) : ''}*/}
+  const handleAlertClose = () => setShowError(false);
 
-    </div>
 
-  );
+  return (<div className={style.container}>
+    <fieldset>
+      <label className={style.wrapperInput}>
+        Email: <input type="email" value={login} onChange={(e) => setLogin(e.target.value)} />
+      </label>
+      <label className={style.wrapperInput}>
+        Password: <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+      </label>
+      <label className={style.wrapperInput}>
+        Nick: <input type="text" value={nick} onChange={(e) => setNick(e.target.value)} />
+
+      </label>
+      <button onClick={handleSubmit}>Create</button>
+      {showError && payload?.errors?.length > 0 && (<div className={style.wrapperError}>
+        <span> {payload.errors[0].message}</span>
+        {'  '}
+        <button onClick={handleAlertClose}>Close</button>
+      </div>)}
+    </fieldset>
+
+  </div>);
 };

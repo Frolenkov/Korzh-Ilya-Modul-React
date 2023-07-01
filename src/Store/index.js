@@ -1,8 +1,7 @@
 import { authReducer } from './authReducer';
 import { cartReducer } from './cartReducer';
 import { localStoredReducer } from './localStoredReducer';
-import { promiseReducer } from './promiseReducer';
-import {actionPromise} from './promiseReducer';
+import { promiseReducer } from './promiseReduser';
 import {configureStore,combineReducers} from '@reduxjs/toolkit';
 
 
