@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { actionPromise } from '../../Store/actionPromise';
+import { actionPromise } from '../../Store/promiseReduser';
 import { loginUser } from '../../api';
 import style from '../RegistrationPage/RegistrationPage.module.css';
+
 
 export function FirstPage() {
   const [login, setLogin] = useState('');
