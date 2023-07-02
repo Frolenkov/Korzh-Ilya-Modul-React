@@ -3,12 +3,16 @@
   flex-direction: column;
   background-color: #0F263D;
   width: 200px;
-  height: 100vh;
+  height: 100%;
   padding: 20px;
 
 }
-.category{
+.personNick{
   color: #1A7E95;
   text-decoration: none;
-  padding-bottom: 20px;
+  padding: 10px;
+  border: 1px solid #0F263D ;
+  margin: 10px 0;
+
+  overflow: hidden;
 }

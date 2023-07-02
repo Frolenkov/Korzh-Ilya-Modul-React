@@ -3,6 +3,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+
 }
 
 input {
@@ -14,6 +15,7 @@ button{
   margin: 10px;
 }
 fieldset {
+  margin-top: 5%;
   display: flex;
   flex-direction: column;
   justify-content: center;

@@ -1,41 +1,50 @@
 import { CircularProgress } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import style from './AsidePanel.module.css';
-import { rootCategories } from '../../api';
+import { getUserById, loginUser, rootCategories } from '../../api';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
-import { actionPromise } from '../../Store/actionPromise';
+import { actionPromise } from '../../Store/promiseReduser';
 import { useParams } from 'react-router';
-
+import { actionAuthLogout } from '../../Store/authReducer';
 
 export const AsidePanel = () => {
-
-
-  const props =useParams()
-  console.log(props);
-
-
+  const navigate = useNavigate();
   const dispatch = useDispatch();
-
+  const props = useParams();
+  console.log(props);
   useEffect(() => {
-    dispatch(actionPromise("category", rootCategories()));
+    dispatch(actionPromise("promiseGetUserById", getUserById("5e04fbb9fcc6d159b36b3e2d",)));
   }, []);
 
-  const category = useSelector(state => state.promise.category);
+  const state = useSelector(state => state.promise.promiseGetUserById);
+  const { status, payload } = state || {};
+  const personData = payload?.data?.UserFindOne;
 
-
-  const { status, payload } = category || {};
+  const { chats } = personData || {};
+  console.log(chats);
+  const exit = () => {
+    dispatch(actionPromise('exit', actionAuthLogout()));
+    navigate("/");
+  };
 
   return status === 'PENDING' || !status ? (<CircularProgress />) : (
 
-    <div className={style.AsidePanel}> {payload?.data?.CategoryFind.map(category => <Link
-      className={style.category}
-      key={Math.random()}
-      to={`/SecondPage/${category._id}`}
-    >
-      {category.name}
-    </Link>)
+    <div className={style.AsidePanel}>
+      <button onClick={exit}>exit</button>
 
-    } </div>);
+      {chats.map(chat => (<Link
+        key={chat._id}
+        className={style.personNick}
+        to={`/SecondPage/${chat._id} `}
+      >
+
+        <span > {chat.members[0].nick ? chat.members[0].nick : 'Incognito Usershdfgzfzgfdtfykgfgdfhgjhhx'} </span>
+      </Link>))}
+
+    </div>
+
+  );
 };
+
 

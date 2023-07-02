@@ -1,4 +1,4 @@
-const url = "http://shop-roles.node.ed.asmer.org.ua/graphql";
+const url = "http://chat.ed.asmer.org.ua/graphql";
 
 export  const gql = async ( query, variables) => {
   const data = {
