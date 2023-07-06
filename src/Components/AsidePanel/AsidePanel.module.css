@@ -2,8 +2,8 @@
   display: flex;
   flex-direction: column;
   background-color: #0F263D;
-  width: 200px;
-  height: 100vh;
+  width: 250px;
+  height: 100%;
   padding: 20px;
 
 }
@@ -13,6 +13,14 @@
   padding: 10px;
   border: 1px solid #0F263D ;
   margin: 10px 0;
-
   overflow: hidden;
+  display: flex;
+}
+.nickAndLastMessage{
+  display: flex;
+  flex-direction: column;
+}
+span{
+  margin-left: 20px;
+  white-space: nowrap;
 }

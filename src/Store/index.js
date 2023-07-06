@@ -1,5 +1,4 @@
 import { authReducer } from './authReducer';
-import { cartReducer } from './cartReducer';
 import { localStoredReducer } from './localStoredReducer';
 import { promiseReducer } from './promiseReduser';
 import {configureStore,combineReducers} from '@reduxjs/toolkit';
@@ -8,8 +7,7 @@ import {configureStore,combineReducers} from '@reduxjs/toolkit';
 
 
 const reducers = combineReducers({
-  promise: localStoredReducer(promiseReducer, 'promise'),
-  cart: cartReducer,
+  promise: promiseReducer,
   auth: localStoredReducer(authReducer, 'auth')
 });
 

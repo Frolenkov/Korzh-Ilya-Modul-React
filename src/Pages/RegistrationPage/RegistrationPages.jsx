@@ -4,7 +4,10 @@ import { actionPromise } from '../../Store/promiseReduser';
 import { loginUser, registrationUser } from '../../api';
 import style from "./RegistrationPage.module.css";
 import { actionAuthLogin } from '../../Store/authReducer';
-import {useNavigate} from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { InputLogin } from '../../Components/InputLogin';
+import { InputPassword } from '../../Components/InputPassword';
+import { Button } from '@mui/material';
 
 export const RegistrationPages = () => {
   const [login, setLogin] = useState('');
@@ -16,53 +19,40 @@ export const RegistrationPages = () => {
   const state = useSelector((state) => state.promise);
   const { status, payload } = state?.promiseRegistrationUser || {};
 
-  const handleSubmit = () => {
-    dispatch(actionPromise('promiseRegistrationUser', registrationUser(login, password, nick)));
-    };
+  const handleSubmit = async () => {
 
-  useEffect(() => {
-    if (payload?.data?.UserUpsert) {
+    const response = await dispatch(actionPromise('promiseRegistrationUser', registrationUser(login, password, nick)));
+    if (response?.data?.UserUpsert) {
       dispatch(actionPromise('promiseLoginUser', loginUser(login, password)));
     }
-
-    if (payload?.errors?.length > 0) {
+    if (response?.errors?.length > 0) {
       setShowError(true);
     }
-  }, [payload]);
 
-  const handleAlertClose = () => setShowError(false);
-
-  useEffect(()=>{
     const token = state?.promiseLoginUser?.payload?.data?.login;
     if (token) {
       dispatch(actionAuthLogin(token));
     }
-  },[state])
 
+  };
 
+  const handleAlertClose = () => setShowError(false);
 
   const navigate = useNavigate();
   const authState = useSelector((state) => state?.auth?.token);
-  useEffect(()=>{
-    if(authState){
+  useEffect(() => {
+    if (authState) {
       navigate("/SecondPage");
     }
-  },[navigate,authState])
-
+  }, [navigate, authState]);
 
   return (<div className={style.container}>
-    <fieldset>
-      <div className={style.wrapperInput}>
-        Email: <input type="email" value={login} onChange={(e) => setLogin(e.target.value)} />
-      </div>
-      <div className={style.wrapperInput}>
-        Password: <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-      </div>
-      <div className={style.wrapperInput}>
-        Nick: <input type="text" value={nick} onChange={(e) => setNick(e.target.value)} />
+    <fieldset className={style.wrapperRegisterCard}>
+      <InputLogin login={login} setValue={setLogin} text="Email" />
+      <InputPassword password={password} setPassword={setPassword} />
+      <InputLogin login={nick} setValue={setNick} text="Nick" />
+      <Button onClick={handleSubmit} variant="contained">Create</Button>
 
-      </div>
-      <button onClick={handleSubmit}>Create</button>
       {showError && payload?.errors?.length > 0 && (<div className={style.wrapperError}>
         <span> {payload.errors[0].message}</span>
         {'  '}

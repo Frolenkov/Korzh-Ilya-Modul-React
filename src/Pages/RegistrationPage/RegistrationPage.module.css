@@ -3,27 +3,27 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  height: 500px;
 
 }
 
-input {
-  color: #0f7dc6;
-}
-button{
+button {
   cursor: pointer;
-  width: 100px;
+  width: 130px;
   margin: 10px;
 }
-fieldset {
+
+.wrapperRegisterCard {
   margin-top: 5%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-around;
   align-items: center;
   border-color: #0f7dc6;
-  width: 35%;
   padding: 20px;
-  box-shadow: 0 0 5px 5px rgba(29,162,216, 0.2);
+  box-shadow: 0 0 5px 5px rgba(29, 162, 216, 0.2);
+  width: 500px;
+  height: 900px;
 }
 
 .wrapperInput {
@@ -31,11 +31,25 @@ fieldset {
   display: flex;
   flex-direction: column;
   width: 60%;
-  margin: 10px;
+
 }
-.wrapperError{
+
+.wrapperError {
   display: flex;
   flex-direction: column;
   align-items: center;
 
 }
+
+.error {
+  margin: 20px 0;
+}
+
+.wrapperButton {
+  display: flex;
+  gap: 40px;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
