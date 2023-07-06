@@ -18,7 +18,7 @@ export const RegistrationPages = () => {
 
   const handleSubmit = () => {
     dispatch(actionPromise('promiseRegistrationUser', registrationUser(login, password, nick)));
-  };
+    };
 
   useEffect(() => {
     if (payload?.data?.UserUpsert) {

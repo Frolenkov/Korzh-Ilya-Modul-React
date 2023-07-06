@@ -5,6 +5,7 @@ import { actionPromise } from '../../Store/promiseReduser';
 import { loginUser } from '../../api';
 import style from '../RegistrationPage/RegistrationPage.module.css';
 import { actionAuthLogin } from '../../Store/authReducer';
+import { Button } from '@mui/material';
 
 export function LoginPage() {
   const [login, setLogin] = useState('');
@@ -14,43 +15,32 @@ export function LoginPage() {
   const dispatch = useDispatch();
   const handleSubmit = () => {
     dispatch(actionPromise('promiseLoginUser', loginUser(login, password)));
-
   };
+
   const state = useSelector(state => state?.promise);
   const { status, payload } = state?.promiseLoginUser || {};
-
-
 
   useEffect(() => {
     if (payload?.data?.login === null) {
       setShowError(true);
-    }if (payload?.data?.login ) {
-      dispatch(actionAuthLogin( payload?.data?.login));
+    }
+    if (payload?.data?.login) {
+      dispatch(actionAuthLogin(payload?.data?.login));
     }
   }, [payload]);
 
   const handleAlertClose = () => {
     setShowError(false);
   };
-useEffect(()=>{
-  const token = state?.promiseLoginUser?.payload?.data?.login;
-  if (token) {
-    dispatch(actionAuthLogin(token));
-  }
-
-},[state])
-
 
   const navigate = useNavigate();
   const authState = useSelector((state) => state?.auth?.token);
-  useEffect(()=>{
-    if(authState){
+
+  useEffect(() => {
+    if (authState) {
       navigate("/SecondPage");
     }
-  },[navigate,authState])
-
-
-
+  }, [navigate, authState]);
 
   return (<div className={style.container}>
     <fieldset>
@@ -63,13 +53,14 @@ useEffect(()=>{
         Password: <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
       </label>
 
-      <button onClick={handleSubmit}>submit</button>
+
+      <Button onClick={handleSubmit} variant="contained">Log in</Button>
 
       {status === "FULFILLED" && showError && payload?.data?.login === null && (<div className={style.wrapperError}>
-          <span>Please register here if you want to join us </span>
-          {'  '}
-          <button onClick={handleAlertClose}>Close</button>
-        </div>)}
+        <span>Please register here if you want to join us </span>
+        {'  '}
+        <button onClick={handleAlertClose}>Close</button>
+      </div>)}
 
       <Link to="/:registration">Registration</Link>
 

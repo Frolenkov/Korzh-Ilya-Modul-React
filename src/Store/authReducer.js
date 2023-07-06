@@ -6,7 +6,6 @@ const jwtDecode = (token) => {
     alert('Ты не зарегистрирован ');
   }
 };
-
 export function authReducer(state = {}, { type, token }) {
   if (token) {
     localStorage.authToken = token;
