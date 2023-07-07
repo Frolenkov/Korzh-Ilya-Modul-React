@@ -38,12 +38,14 @@ export const AsidePanel = () => {
       className={style.personNick}
       to={`/${chat._id} `}
     >
+
       <Avatar alt={chat.members[0].nick} />
 
       <div className={style.nickAndLastMessage}>
         <span> {chat.members.length > 2 ? "group" : chat.members[0].nick ? chat.members[0].nick : 'Incognito User'}</span>
         <span>{chat.messages[chat.messages.length - 1]} 1</span>
       </div>
+
     </Link>))}
 
   </div>);

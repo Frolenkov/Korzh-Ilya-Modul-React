@@ -8,17 +8,21 @@
 
 }
 .personNick{
+
   color: #1A7E95;
   text-decoration: none;
-  padding: 10px;
-  border: 1px solid #0F263D ;
+  padding: 7px;
+  border: 1px solid #081421 ;
   margin: 10px 0;
   overflow: hidden;
   display: flex;
+  box-shadow: 0 0 5px 5px rgba(29, 162, 216, 0.2);
+  border-radius: 5px;
 }
 .nickAndLastMessage{
   display: flex;
   flex-direction: column;
+
 }
 span{
   margin-left: 20px;
