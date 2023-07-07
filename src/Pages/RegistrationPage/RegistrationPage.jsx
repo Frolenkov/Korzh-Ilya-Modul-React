@@ -3,13 +3,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { actionPromise } from '../../Store/promiseReduser';
 import { loginUser, registrationUser } from '../../api';
 import style from "./RegistrationPage.module.css";
-import { actionAuthLogin } from '../../Store/authReducer';
+import { actionAuthLogin, fullRegistration } from '../../Store/authReducer';
 import { useNavigate } from 'react-router-dom';
 import { InputLogin } from '../../Components/InputLogin';
 import { InputPassword } from '../../Components/InputPassword';
 import { Button } from '@mui/material';
 
-export const RegistrationPages = () => {
+export const RegistrationPage = () => {
   const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
   const [nick, setNick] = useState('');
@@ -18,26 +18,15 @@ export const RegistrationPages = () => {
 
   const state = useSelector((state) => state.promise);
   const { status, payload } = state?.promiseRegistrationUser || {};
-
   const handleSubmit = async () => {
-
-    const response = await dispatch(actionPromise('promiseRegistrationUser', registrationUser(login, password, nick)));
-    if (response?.data?.UserUpsert) {
-      dispatch(actionPromise('promiseLoginUser', loginUser(login, password)));
-    }
-    if (response?.errors?.length > 0) {
+    dispatch(fullRegistration(login, password, nick));
+    if (payload?.errors?.length > 0) {
       setShowError(true);
-    }
-
-    const token = state?.promiseLoginUser?.payload?.data?.login;
-    if (token) {
-      dispatch(actionAuthLogin(token));
     }
 
   };
 
   const handleAlertClose = () => setShowError(false);
-
   const navigate = useNavigate();
   const authState = useSelector((state) => state?.auth?.token);
   useEffect(() => {

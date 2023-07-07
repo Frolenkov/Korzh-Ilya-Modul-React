@@ -1,10 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { actionPromise } from '../../Store/promiseReduser';
-import { loginUser } from '../../api';
 import style from '../RegistrationPage/RegistrationPage.module.css';
-import { actionAuthLogin } from '../../Store/authReducer';
+import { actionAuthLogin, fullLogin } from '../../Store/authReducer';
 import { Button, TextField } from '@mui/material';
 import  { InputPassword } from '../../Components/InputPassword';
 import { InputLogin } from '../../Components/InputLogin';
@@ -20,11 +18,8 @@ export function LoginPage() {
   const { status, payload } = state?.promiseLoginUser || {};
 
   const handleSubmit = async () => {
-    const response = await dispatch(actionPromise('promiseLoginUser', loginUser(login, password)));
-    if (response?.data?.login) {
-      dispatch(actionAuthLogin(response?.data?.login));
-    }
-    if (response?.data?.login === null) {
+    dispatch (fullLogin(login, password));
+    if (payload?.data?.login === null) {
       setShowError(true);
     }
   };
