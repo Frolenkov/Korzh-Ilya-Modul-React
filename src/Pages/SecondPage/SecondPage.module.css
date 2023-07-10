@@ -1,4 +1,5 @@
 .wrapperPage{
-  height: 100%;
-background-color:  #081421;
+  width: 100%;
+min-height: 100%;;
+  background-color: #081421;
 }

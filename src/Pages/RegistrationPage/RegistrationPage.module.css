@@ -1,10 +1,9 @@
 .container {
   color: #0f7dc6;
+  height: 100%;
   display: flex;
-  flex-direction: column;
+  justify-content: center;
   align-items: center;
-  height: 500px;
-
 }
 
 button {
@@ -14,16 +13,15 @@ button {
 }
 
 .wrapperRegisterCard {
-  margin-top: 5%;
+  border-color: #0f7dc6;
+  box-shadow: 0 0 5px 5px rgba(29, 162, 216, 0.2);
+  width: 500px;
+  height: 500px;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
   align-items: center;
-  border-color: #0f7dc6;
-  padding: 20px;
-  box-shadow: 0 0 5px 5px rgba(29, 162, 216, 0.2);
-  width: 500px;
-  height: 900px;
+
 }
 
 .wrapperInput {

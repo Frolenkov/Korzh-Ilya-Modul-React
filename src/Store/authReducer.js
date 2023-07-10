@@ -10,9 +10,10 @@ const jwtDecode = (token) => {
   }
 };
 
+
+
 export function authReducer(state = {}, { type, token }) {
-  console.log(type);
-  console.log(state);
+
   if (token) {
     localStorage.authToken = token;
   }
@@ -24,6 +25,7 @@ export function authReducer(state = {}, { type, token }) {
     };
   }
   if (type === 'AUTH_LOGOUT') {
+    delete localStorage.authToken;
     return {};
   }
   return state;
@@ -33,10 +35,11 @@ export const actionAuthLogin = token => ({ type: 'AUTH_LOGIN', token });
 export const actionAuthLogout = () => ({ type: 'AUTH_LOGOUT' });
 
 export function fullLogin(login, password) {
+
   return async dispatch => {
     const response = await dispatch(actionPromise('promiseLoginUser', loginUser(login, password)));
-    if (response?.data?.login) {
-      dispatch(actionAuthLogin(response?.data?.login));
+        if (response?.data?.login) {
+          dispatch(actionAuthLogin(response?.data?.login));
     }
   };
 }
@@ -45,7 +48,7 @@ export function fullRegistration(login, password, nick) {
   return async dispatch => {
     const response = await dispatch(actionPromise('promiseRegistrationUser', registrationUser(login, password, nick)));
     if (response?.data?.UserUpsert) {
-      fullLogin(login, password);
+      dispatch(fullLogin(login, password));
     }
   };
 }

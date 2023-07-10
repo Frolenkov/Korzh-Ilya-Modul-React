@@ -4,8 +4,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import style from '../RegistrationPage/RegistrationPage.module.css';
 import { actionAuthLogin, fullLogin } from '../../Store/authReducer';
 import { Button, TextField } from '@mui/material';
-import  { InputPassword } from '../../Components/InputPassword';
-import { InputLogin } from '../../Components/InputLogin';
+import  { InputPassword } from '../../Components/Input/InputPassword';
+import { InputLogin } from '../../Components/Input/InputLogin';
 
 export function LoginPage() {
   const [login, setLogin] = useState('');

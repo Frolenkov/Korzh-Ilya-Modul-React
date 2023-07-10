@@ -5,21 +5,21 @@ import { loginUser, registrationUser } from '../../api';
 import style from "./RegistrationPage.module.css";
 import { actionAuthLogin, fullRegistration } from '../../Store/authReducer';
 import { useNavigate } from 'react-router-dom';
-import { InputLogin } from '../../Components/InputLogin';
-import { InputPassword } from '../../Components/InputPassword';
+import { InputLogin } from '../../Components/Input/InputLogin';
+import { InputPassword } from '../../Components/Input/InputPassword';
 import { Button } from '@mui/material';
 
 export const RegistrationPage = () => {
   const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
-  const [nick, setNick] = useState('');
+  // const [nick, setNick] = useState('');
   const [showError, setShowError] = useState(false);
   const dispatch = useDispatch();
 
   const state = useSelector((state) => state.promise);
-  const { status, payload } = state?.promiseRegistrationUser || {};
+  const {  payload } = state?.promiseRegistrationUser || {};
   const handleSubmit = async () => {
-    dispatch(fullRegistration(login, password, nick));
+    dispatch(fullRegistration(login, password));
     if (payload?.errors?.length > 0) {
       setShowError(true);
     }
@@ -31,6 +31,7 @@ export const RegistrationPage = () => {
   const authState = useSelector((state) => state?.auth?.token);
   useEffect(() => {
     if (authState) {
+      console.log(authState);
       navigate("/SecondPage");
     }
   }, [navigate, authState]);
@@ -39,7 +40,7 @@ export const RegistrationPage = () => {
     <fieldset className={style.wrapperRegisterCard}>
       <InputLogin login={login} setValue={setLogin} text="Email" />
       <InputPassword password={password} setPassword={setPassword} />
-      <InputLogin login={nick} setValue={setNick} text="Nick" />
+      {/*<InputLogin login={nick} setValue={setNick} text="Nick" />*/}
       <Button onClick={handleSubmit} variant="contained">Create</Button>
 
       {showError && payload?.errors?.length > 0 && (<div className={style.wrapperError}>
