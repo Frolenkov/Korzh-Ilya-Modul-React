@@ -5,6 +5,7 @@ import { actionPromise } from '../../Store/promiseReduser';
 import { createChat, getUserByLogin } from '../../api';
 import { useDispatch, useSelector } from 'react-redux';
 import { useState } from 'react';
+import { addChat } from '../../Store/chatReducer';
 
 const CreateChat = () => {
   const [login, setLogin] = useState('');
@@ -18,10 +19,12 @@ const CreateChat = () => {
     if (event.key === 'Enter') {
 
       setError(true);
+
       const stateGetUserByLogin = await dispatch(actionPromise("promiseGetUserByLogin", getUserByLogin(login)));
       const id = stateGetUserByLogin?.data?.UserFindOne?._id;
       if (id) {
-        await dispatch(actionPromise("promiseCreateChat", createChat(id)));
+        const chat = await dispatch(actionPromise("promiseCreateChat", createChat(id)));
+
       }
     }
   };
@@ -30,8 +33,7 @@ const CreateChat = () => {
     setError(false);
   };
 
-  return (
-    <>
+  return (<>
       <Input
         keyPress={handleKeyPress}
         value={login}
@@ -39,16 +41,14 @@ const CreateChat = () => {
         text={"Create Chat"}
       />
 
-      {!dataUserLogin && error && statusUserLogin === 'FULFILLED' && (
-        <>
+      {!dataUserLogin && error && statusUserLogin === 'FULFILLED' && (<>
           <span className={style.spanError}>Such user doesn't exist</span>
           <Button
-            sx={{width:"90%"}}
-            onClick={showError} variant="contained">Close</Button>
-        </>
-      )}
-    </>
-  );
+            sx={{ width: "90%" }}
+            onClick={showError} variant="contained"
+          >Close</Button>
+        </>)}
+    </>);
 };
 
 export default CreateChat;

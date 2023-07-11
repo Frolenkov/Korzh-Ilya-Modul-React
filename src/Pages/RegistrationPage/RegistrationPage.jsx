@@ -23,7 +23,6 @@ export const RegistrationPage = () => {
     if (payload?.errors?.length > 0) {
       setShowError(true);
     }
-
   };
 
   const handleAlertClose = () => setShowError(false);

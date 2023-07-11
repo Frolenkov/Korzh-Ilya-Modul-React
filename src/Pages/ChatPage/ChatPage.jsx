@@ -19,10 +19,9 @@ export const ChatPage = () => {
   const arrMessages = payload?.data?.ChatFind[0]?.messages;
   const chatId = props.chatId;
 
-  useEffect(async () => {
-    const chat = await dispatch(actionPromise('promiseGetChatById', getChatById(chatId)));
-  dispatch()
-    }, [chatId]);
+  useEffect(() => {
+     dispatch(actionPromise('promiseGetChatById', getChatById(chatId)));
+     }, [chatId]);
 
   return (<div className={style.pageWrapper}>
     <AsidePanel />

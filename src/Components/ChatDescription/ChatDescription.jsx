@@ -4,8 +4,8 @@ import { Avatar } from '@mui/material';
 import { URLWithoutGQL, URL } from '../../api/gql';
 import { useEffect, useState } from 'react';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import { chatDelete } from '../../Store/chatReducer';
-import { useDispatch } from 'react-redux';
+import {  deleteChatAction } from '../../Store/chatReducer';
+import { useDispatch, useSelector } from 'react-redux';
 
 export const ChatDescription = ({ chat }) => {
   const dispatch = useDispatch();
@@ -17,13 +17,14 @@ export const ChatDescription = ({ chat }) => {
   const chatId = chat._id;
   const lastMessage = messages[messages?.length - 1]?.text;
 
+  const memberId = useSelector((state) => state.auth.payload.sub.id);
 
   const selectedChat = (chatId) => {
     setIdChat(chatId);
   };
 
-  const deleteChat = (chatId) => {
-    dispatch(chatDelete(chatId));
+  const deleteChat = (memberId,chatId) => {
+    dispatch(deleteChatAction(memberId,chatId))
   };
 
   return (<div
@@ -48,7 +49,7 @@ export const ChatDescription = ({ chat }) => {
       <DeleteOutlineIcon
         className={style.trashBasket}
         onClick={() => {
-          deleteChat(chat._id);
+          deleteChat(memberId,chatId);
         }}
       />
 
