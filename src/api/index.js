@@ -1,5 +1,6 @@
 import { gql } from './gql';
-export const getUserById = async (id) => {
+
+export const getUserById = (id) => {
   const UserFindOne = `query ($query: String,) {
   UserFindOne(query: $query) {
     _id
@@ -7,7 +8,7 @@ export const getUserById = async (id) => {
     nick
     avatar{url}
     chats{ 
-       _id
+      _id
       lastModified
       members{
         _id
@@ -30,7 +31,7 @@ export const getUserById = async (id) => {
 }`;
   return gql(UserFindOne, { "query": `[{ "_id": "${id}" }]` });
 };
-export const getUserByLogin = async (login) => {
+export const getUserByLogin = (login) => {
   const UserFindOne = `query ($query: String,) {
   UserFindOne(query: $query) {
     _id
@@ -61,7 +62,7 @@ export const getUserByLogin = async (login) => {
 }`;
   return gql(UserFindOne, { "query": `[{ "login": "${login}" }]` });
 };
-export const registrationUser = async (login, password, nick) => {
+export const registrationUser = (login, password, nick) => {
   const UserUpsert = `mutation ($login:String, $password: String, $nick: String){
   UserUpsert(user: {login:$login, password: $password, nick: $nick}){
     _id
@@ -71,13 +72,13 @@ export const registrationUser = async (login, password, nick) => {
 }`;
   return gql(UserUpsert, { "login": login, "password": password, "nick": nick });
 };
-export const loginUser = async (login, password) => {
+export const loginUser = (login, password) => {
   const Login = `query ($login: String, $password: String) {
   login(login: $login, password: $password) 
 }`;
   return gql(Login, { "login": login, "password": password });
 };
-export const createChat = async (id) => {
+export const createChat = (id) => {
   const ChatUpsert = `mutation($chat: ChatInput){
     ChatUpsert(chat:$chat)  {
       _id
@@ -108,7 +109,7 @@ export const createChat = async (id) => {
   });
 
 };
-export const ChatDelete = async (id) => {
+export const ChatDelete = (id) => {
   const ChatDelete = `mutation($chat: ChatInput){
     ChatDelete(chat:$chat)  {
       _id
@@ -138,7 +139,7 @@ export const ChatDelete = async (id) => {
   });
 
 };
-export const createMessage = async (idChat, text) => {
+export const createMessage = (idChat, text) => {
   const message = ` mutation($message: MessageInput){
   MessageUpsert(message: $message){
    _id
@@ -187,4 +188,71 @@ url
       }, "text": text
     }
   });
+};
+export const getChatById = (id) => {
+  const ChatFind = `query ($query: String) {
+  ChatFind(query: $query) {
+    _id
+    createdAt
+    lastModified
+    lastMessage {
+      _id
+      createdAt
+      owner {
+        createdAt
+        login
+        nick
+        acl
+        avatar {
+          url
+        }
+      }
+      text
+      media {
+        url
+      }
+      replies {
+        text
+        owner {
+          createdAt
+          login
+          nick
+          acl
+          avatar {
+            url
+          }
+        }
+      }
+    }
+    members {
+      _id
+      createdAt
+      login
+      nick
+    }
+    messages {
+      _id
+      createdAt
+      text
+        owner {
+          createdAt
+          login
+          nick
+          acl
+          avatar {
+            url
+          }
+        }
+    }
+    avatar {
+      _id
+      createdAt
+      text
+      url
+      originalFileName
+      type
+    }
+  }
+}`;
+  return gql(ChatFind, { "query": `[{ "_id": "${id}" }]` });
 };

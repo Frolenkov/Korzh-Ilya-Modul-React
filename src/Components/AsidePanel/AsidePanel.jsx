@@ -8,6 +8,7 @@ import { actionPromise } from '../../Store/promiseReduser';
 import { actionAuthLogout } from '../../Store/authReducer';
 import { ChatDescription } from '../ChatDescription/ChatDescription';
 import CreateChat from '../CreateChat/CreateChat';
+import { chatDelete, installStateChats } from '../../Store/chatReducer';
 
 export const AsidePanel = () => {
 
@@ -20,9 +21,15 @@ export const AsidePanel = () => {
   const { status, payload } = state || {};
   const chats = payload?.data?.UserFindOne?.chats || [];
 
-  useEffect(() => {
+  const state1 = useSelector(state => state);
+  console.log(state1);
+
+  useEffect(  () => {
     dispatch(actionPromise("promiseGetUserById", getUserById(stateUserId)));
-  }, []);
+    }, []);
+
+
+
 
   const exit = () => {
     dispatch(actionAuthLogout());
@@ -48,6 +55,7 @@ export const AsidePanel = () => {
           ) : (
             <div>net</div>
           )}
+
         </>
       )}
     </div>

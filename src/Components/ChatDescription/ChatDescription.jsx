@@ -4,6 +4,8 @@ import { Avatar } from '@mui/material';
 import { URLWithoutGQL, URL } from '../../api/gql';
 import { useEffect, useState } from 'react';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import { chatDelete } from '../../Store/chatReducer';
+import { useDispatch } from 'react-redux';
 
 export const ChatDescription = ({ chat }) => {
   const { nick, login, } = chat.members[0];
@@ -11,13 +13,14 @@ export const ChatDescription = ({ chat }) => {
   const avatar = URLWithoutGQL + "/" + chat?.members[0]?.avatar?.url;
   const messages = chat?.messages;
   const lastMessage = messages[messages?.length - 1]?.text;
-  console.log(lastMessage);
+  const dispatch = useDispatch()
+  // console.log(lastMessage);
   const selectedChat = (id) => {
     setIdChat(id);
   };
 
   const deleteChat = (id) => {
-
+    dispatch(chatDelete(id))
   };
 
   return (<div
