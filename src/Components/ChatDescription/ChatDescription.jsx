@@ -8,37 +8,40 @@ import { chatDelete } from '../../Store/chatReducer';
 import { useDispatch } from 'react-redux';
 
 export const ChatDescription = ({ chat }) => {
+  const dispatch = useDispatch();
+
   const { nick, login, } = chat.members[0];
   const [idChat, setIdChat] = useState('');
   const avatar = URLWithoutGQL + "/" + chat?.members[0]?.avatar?.url;
   const messages = chat?.messages;
+  const chatId = chat._id;
   const lastMessage = messages[messages?.length - 1]?.text;
-  const dispatch = useDispatch()
-  // console.log(lastMessage);
-  const selectedChat = (id) => {
-    setIdChat(id);
+
+
+  const selectedChat = (chatId) => {
+    setIdChat(chatId);
   };
 
-  const deleteChat = (id) => {
-    dispatch(chatDelete(id))
+  const deleteChat = (chatId) => {
+    dispatch(chatDelete(chatId));
   };
 
   return (<div
     onClick={() => {
-      selectedChat(chat._id);
+      selectedChat(chatId);
     }}
   >
     <Link
 
-      className={idChat === chat._id ? style.active : style.personNick}
-      to={`/SecondPage/${chat._id} `}
+      className={idChat === chatId ? style.active : style.personNick}
+      to={`/SecondPage/${chatId} `}
     >
 
       <Avatar src={avatar}> {login.slice(0, 2)}< /Avatar>
 
       <div className={style.nickAndLastMessage}>
         <span> {chat.members.length > 2 ? "group" : nick ? nick : login}</span>
-        <span>{messages.length ? lastMessage.slice(0,12)+'...': 'Нет сообщений'}</span>
+        <span>{messages.length ? lastMessage.slice(0, 12) + '...' : 'Нет сообщений'}</span>
 
       </div>
 
