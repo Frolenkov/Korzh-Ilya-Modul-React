@@ -5,7 +5,7 @@
   background-color: #0f263d;
 width: 300px;
   height: 100vh;
-  overflow: scroll;
+  overflow-y: scroll;
 }
 .AsidePanel::-webkit-scrollbar {
   width: 4px;

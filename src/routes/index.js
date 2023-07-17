@@ -11,7 +11,7 @@ export const router = createBrowserRouter([
   { path: "/:loginPages", element: <RegistrationPage />, },
   { path: "/SecondPage", element: <SecondPage />, },
   { path: "/SecondPage/:chatId", element: <ChatPage />, },
-  { path: "/ThirdPage/:ThirdPageId", element: <ThirdPage />, },
+  { path: "/ThirdPage", element: <ThirdPage />, },
   { path: "/ThirdPage/:ThirdPageId", element: <ThirdPage />, },
   { path: "*", element: <ErrorPage />, },
 ]);

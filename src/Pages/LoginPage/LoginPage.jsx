@@ -19,6 +19,7 @@ export function LoginPage() {
 
   const handleSubmit = async () => {
     dispatch (fullLogin(login, password));
+    console.log(payload);
     if (payload?.data?.login === null) {
       setShowError(true);
     }

@@ -5,7 +5,7 @@ import { actionPromise } from '../../Store/promiseReduser';
 import { createChat, getUserByLogin } from '../../api';
 import { useDispatch, useSelector } from 'react-redux';
 import { useState } from 'react';
-import { addChat } from '../../Store/chatReducer';
+
 
 const CreateChat = () => {
   const [login, setLogin] = useState('');

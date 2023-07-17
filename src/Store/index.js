@@ -1,7 +1,7 @@
 import { authReducer } from './authReducer';
 import { localStoredReducer } from './localStoredReducer';
 import { promiseReducer } from './promiseReduser';
-import {configureStore,combineReducers} from '@reduxjs/toolkit';
+import { configureStore, combineReducers, getDefaultMiddleware } from '@reduxjs/toolkit';
 import { chatsReducer } from './chatReducer';
 
 
@@ -13,4 +13,10 @@ const reducers = combineReducers({
   chat: chatsReducer
 });
 
-export const store = configureStore({  reducer: reducers,});
+export const store = configureStore(
+  {  reducer: reducers,
+    middleware: getDefaultMiddleware({
+      immutableCheck: false,
+      serializableCheck: false,
+    }),}
+);

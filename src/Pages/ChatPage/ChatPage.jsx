@@ -1,34 +1,63 @@
-import { AsidePanel } from '../../Components/AsidePanel/AsidePanel';
-import style from "./ChatPage.module.css";
-import InputChat from '../../Components/Input/InputChat';
-import { useEffect, useState } from 'react';
-import SendIcon from '@mui/icons-material/Send';
+import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import { createMessage, getMessagesByChatId } from '../../api';
+import { addMessage, addMessages } from '../../Store/chatReducer';
 import { actionPromise } from '../../Store/promiseReduser';
-import { getChatById } from '../../api';
+import { AsidePanel } from '../../Components/AsidePanel/AsidePanel';
+import InputChat from '../../Components/Input/InputChat';
+import SendIcon from '@mui/icons-material/Send';
+import style from "./ChatPage.module.css";
+import { Time } from '../../Components/Time/Time';
+import { useChatSocket } from '../../hooks/useChatSocket';
 
 export const ChatPage = () => {
   const [value, setValue] = useState('');
-  const props = useParams();
+  const [scip, setScip] = useState(5);
+  const { chatId } = useParams();
   const dispatch = useDispatch();
+  const messages = useSelector(state => state?.chat[chatId]?.messages);
+  const userId = useSelector(state => state?.promise?.promiseGetUserById?.payload?.data?.UserFindOne?._id);
+  const chat = useSelector(state => state?.chat);
+  const userPromise = useSelector(state => state?.promise?.promiseGetUserById);
+  const messagePromise = useSelector(state => state?.promise?.messageByChatId);
+  const sendMessage = async (value, chatId) => {
+    const dataMessage = await dispatch(actionPromise('createMessage', createMessage(chatId, value)));
+    // const message = dataMessage?.data?.MessageUpsert;
+    // dispatch(addMessage(message, chatId));
+    setValue(prevState => prevState='')
+  };
 
-  const stateMessage = useSelector(state => state?.promise?.promiseGetChatById);
-  const { status, payload } = stateMessage || {};
-
-  const arrMessages = payload?.data?.ChatFind[0]?.messages;
-  const chatId = props.chatId;
+  useChatSocket();
 
   useEffect(() => {
-     dispatch(actionPromise('promiseGetChatById', getChatById(chatId)));
-     }, [chatId]);
+
+    if (Object.keys(chat).length && userPromise?.status === "FULFILLED") {
+
+      (async () => {
+
+        const dataMessages = await dispatch(actionPromise("messageByChatId", getMessagesByChatId(chatId)));
+        const messages = dataMessages?.data?.MessageFind;
+        dispatch(addMessages(messages, chatId));
+      })();
+    }
+  }, [chatId, dispatch, userPromise]);
 
   return (<div className={style.pageWrapper}>
     <AsidePanel />
-
     <div className={style.chatWrapper}>
-      {Array.isArray(arrMessages) && status === 'FULFILLED' ? (arrMessages.map(message => <div key={message._id}>
-        <span >{message.text}</span></div>)) : ''}
+
+      {messages?.length ? (messages.map(message => (<div
+        key={message._id}
+        className={message.owner?._id !== userId ? style.messageWrapperGuest : style.messageWrapperUser}
+      >
+        <div
+          className={message.owner?._id !== userId ? style.messageGuest : style.messageUser}
+        >
+          {message.text}
+        </div>
+        <Time time={message.createdAt} />
+      </div>))) : null}
 
       <div className={style.inputWrapper}>
         <InputChat
@@ -37,10 +66,31 @@ export const ChatPage = () => {
           text="message"
           sx={{ width: "100%" }}
         />
-        <SendIcon fontSize="large" className={style.sendIMG} />
-
+        <SendIcon
+          fontSize="large"
+          className={style.sendIMG}
+          onClick={() => sendMessage(value, chatId)}
+        />
       </div>
     </div>
-
   </div>);
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

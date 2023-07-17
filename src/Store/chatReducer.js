@@ -1,26 +1,46 @@
 export const chatsReducer = (state = {}, action) => {
-  if (action.type === 'CHATS') {
+  if (action.type === 'ADD_CHATS') {
     const newState = { ...state };
-    action.chats.map(chat => {
+    action.chats.forEach(chat => {
       newState[chat._id] = chat;
     });
+
     return newState;
   }
 
-  if (action.type === 'CHAT_DEL') {
-    const chatId = action.chatId;
-    const newState = { ...state };
-    const chat = newState[chatId];
-    const updatedMembers = chat.members.filter(member => member._id !== action.memberId);
+  if (action.type === 'ADD_CHAT') {
+    return { ...state, [action.chat._id]: action.chat };
+  }
+
+  if (action.type === 'ADD_MESSAGES' && Object.keys(state).length) {
+    const { chatId, messages } = action;
+    const chat = state[chatId];
+    const updatedChat = { ...chat, messages: [...messages] };
+    return { ...state, [chatId]: updatedChat };
+  }
+
+  if (action.type === 'ADD_MESSAGE') {
+    const { chatId, message } = action;
+    const chat = state[chatId];
+    const updatedMessages = [...chat.messages, message];
+    const updatedChat = { ...chat, messages: updatedMessages };
+    return { ...state, [chatId]: updatedChat };
+
+  }
+
+  if (action.type === 'DEL_CHAT') {
+    const { chatId, memberId } = action;
+    const chat = state[chatId];
+    const updatedMembers = chat.members.filter(member => member._id !== memberId);
     const updatedChat = { ...chat, members: updatedMembers };
-    newState[chatId] = updatedChat;
-    console.log(newState);
-    return newState;
+    return { ...state, [chatId]: updatedChat };
   }
 
   return state;
 };
 
-export const installStateChats = (chats) => ({ type: 'CHATS', chats });
-export const addChat = (chat) => ({ type: 'CHATS', chats: [chat] });
-export const deleteChatAction = (memberId, chatId) => ({ type: 'CHAT_DEL', memberId, chatId });
+export const addChats = (chats) => ({ type: 'ADD_CHATS', chats });
+export const addChat = (chat, chatId) => ({ type: 'ADD_CHAT', chat });
+export const addMessages = (messages, chatId) => ({ type: 'ADD_MESSAGES', messages, chatId });
+export const addMessage = (message, chatId) => ({ type: 'ADD_MESSAGE', message, chatId });
+export const deleteChatAction = (memberId, chatId) => ({ type: 'DEL_CHAT', memberId, chatId });

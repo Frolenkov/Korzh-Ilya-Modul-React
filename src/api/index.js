@@ -10,21 +10,21 @@ export const getUserById = (id) => {
     chats{ 
       _id
       lastModified
+        lastMessage {
+        _id
+        createdAt
+        text
+        media{
+          url
+        }
+      }
       members{
         _id
         login
         nick
         avatar{url}
       }
-      messages{   
-        owner{
-          _id
-          login
-          nick
-          avatar{url}
-        }
-        text    
-          }
+      
     }
     
   }
@@ -39,7 +39,7 @@ export const getUserByLogin = (login) => {
     nick
     avatar{url}
     chats{ 
-       _id
+      _id
       lastModified
       members{
         _id
@@ -139,7 +139,7 @@ export const ChatDelete = (id) => {
   });
 
 };
-export const createMessage = (idChat, text) => {
+export const createMessage = (chatId, text) => {
   const message = ` mutation($message: MessageInput){
   MessageUpsert(message: $message){
    _id
@@ -180,79 +180,86 @@ url
     }
   }
 }`;
-  return gql({
+  return gql(message,{
     "message": {
       "chat": {
-        "_id": idChat
+        "_id": chatId
 
       }, "text": text
     }
   });
 };
 export const getChatById = (id) => {
-  const ChatFind = `query ($query: String) {
-  ChatFind(query: $query) {
+  const ChatFind = `query ($query: String){
+  ChatFindOne(query: $query){
     _id
-    createdAt
     lastModified
-    lastMessage {
-      _id
-      createdAt
-      owner {
-        createdAt
+    lastMessage{
+      owner{
         login
         nick
-        acl
-        avatar {
-          url
-        }
+        avatar{url}
       }
       text
-      media {
-        url
-      }
-      replies {
-        text
-        owner {
-          createdAt
-          login
-          nick
-          acl
-          avatar {
-            url
-          }
-        }
-      }
+      media{url}
     }
-    members {
+    title
+    avatar{url}
+    members{
       _id
-      createdAt
       login
       nick
+      avatar{url}
     }
-    messages {
+    messages{
       _id
-      createdAt
+      owner{
+        login
+        nick
+        avatar{url}
+      }
       text
-        owner {
-          createdAt
-          login
-          nick
-          acl
-          avatar {
-            url
-          }
-        }
-    }
-    avatar {
-      _id
-      createdAt
-      text
-      url
-      originalFileName
-      type
+      media{url}
     }
   }
-}`;
-  return gql(ChatFind, { "query": `[{ "_id": "${id}" }]` });
+}
+
+`;
+  return gql(ChatFind, { "query": `[{ "_id": "${id}" }]`});
 };
+export const getMessagesByChatId = (chatId) => {
+  const MessageFind = `query ($query: String) {
+  MessageFind(query: $query) {
+    _id
+    createdAt
+    owner{
+      _id
+      login
+      nick
+      avatar{url}
+    }
+    text
+    media{url}
+  }
+}`;
+  return gql(MessageFind, { "query": `[{ "chat._id": "${chatId}" }, {  "skip": [0],  "limit": [100]}]` });
+};
+
+export const getMessageByMessageId = (messageId) => {
+  const MessageFindOne = `query ($query: String) {
+  MessageFindOne(query: $query) {
+    _id
+    createdAt
+    owner{
+      _id
+      login
+      nick
+      avatar{url}
+    }
+    text
+    media{url}
+  }
+}`;
+  return gql(MessageFindOne, { "query": `[{ "_id": "${messageId}" }]` });
+};
+
