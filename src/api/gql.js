@@ -1,7 +1,6 @@
-export const URL = "http://chat.ed.asmer.org.ua/graphql";
-export const URLWithoutGQL = "http://chat.ed.asmer.org.ua";
+import { URL } from "../constants";
 
-export  const gql = async ( query, variables) => {
+export const gql = async (query, variables) => {
   const data = {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },

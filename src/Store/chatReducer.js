@@ -15,6 +15,7 @@ export const chatsReducer = (state = {}, action) => {
   if (action.type === 'ADD_MESSAGES' && Object.keys(state).length) {
     const { chatId, messages } = action;
     const chat = state[chatId];
+    console.log(messages);
     const updatedChat = { ...chat, messages: [...messages] };
     return { ...state, [chatId]: updatedChat };
   }

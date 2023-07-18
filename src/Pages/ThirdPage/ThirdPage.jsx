@@ -1,51 +1,114 @@
-import React, { useState, useEffect } from "react";
-import { render } from "react-dom";
-import InfiniteScroll from "react-infinite-scroll-component";
+import { CircularProgress } from "@mui/material";
+import { useState } from "react";
+import { URLWithoutGQL } from '../../constants';
+import style from "./ThirdPage.module.css";
 
-const style = {
-  height: 30,
-  border: "1px solid green",
-  margin: 6,
-  padding: 8
-};
 export const ThirdPage = () => {
-  const App = () => {
-    const [items, setItems] = useState(Array.from({ length: 20 }));
+  const [isLoading, setIsLoading] = useState(false);
+  const [fileURL, setFileUrl] = useState("");
+  const [fileID, setFileID] = useState("");
+  const [file, setFile] = useState("");
 
-    const fetchMoreData = () => {
-      // имитация асинхронного запроса API
-      setTimeout(() => {
-        setItems((prevItems) => prevItems.concat(Array.from({ length: 20 })));
-      }, 1500);
-    };
 
-    useEffect(() => {
-      // Загрузка данных при первоначальном монтировании компонента
-      fetchMoreData();
-    }, []);
+  const [dragEnter, setDragEnter] = useState(false);
 
-    return (
-      <div>
-        <h1>demo: react-infinite-scroll-component</h1>
-        <hr />
-        <div id="scrollableDiv" style={{ height: 300, overflow: "auto" }}>
-          <InfiniteScroll
-            dataLength={items.length}
-            next={fetchMoreData}
-            hasMore={true}
-            loader={<h4>Loading...</h4>}
-            scrollableTarget="scrollableDiv"
-          >
-            {items.map((i, index) => (
-              <div style={style} key={index}>
-                div - #{index}
-              </div>
-            ))}
-          </InfiniteScroll>
-        </div>
-      </div>
-    );
+
+
+  const dragEnterHandler = (e) => {
+
+    e.preventDefault();
+    e.stopPropagation();
+
+    setDragEnter(true);
   };
 
-  render(<App />, document.getElementById("root"));
+  const dragLeaveHandler = (e) => {
+
+    e.preventDefault();
+    e.stopPropagation();
+
+    setDragEnter(false);
+  };
+
+
+  const postFiles = async (file) => {
+
+    const formData = new FormData();
+
+    formData.append("media", file);
+
+    const response = await fetch(`${URLWithoutGQL}/upload`, {
+      method: "POST",
+      headers: localStorage.authToken
+        ? { Authorization: "Bearer " + localStorage.authToken }
+        : {},
+      body: formData,
+    })
+
+    const data = await response.json();
+
+    console.log(data);
+
+    setFileUrl(data.url);
+    setFileID(data._id);
+
+  }
+
+
+  const fileUploadHandler = async (e) => {
+    setIsLoading(true);
+
+    const files = e.target.files
+    await postFiles(files[0]);
+    setIsLoading(false);
+  };
+
+
+  const dropHandler = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    setIsLoading(true);
+    const files = e.dataTransfer.files;
+    await postFiles(files[0]);
+    console.log(postFiles);
+    setIsLoading(false);
+  };
+
+  return (<div>{!dragEnter ? <div
+    onDragEnter={(e) => dragEnterHandler(e)}
+    onDragLeave={(e) => dragLeaveHandler(e)}
+    onDragOver={(e) => dragEnterHandler(e)}
+    className={style.labelFile}
+  >
+    {isLoading ? <CircularProgress /> :
+
+      <label>
+        Upload your media
+        <br />
+        (png, jpg, pdf)
+        <input
+           accept=".jpg,.jpeg,.png,.pdf"
+          multiple={true}
+          onChange={(e) => fileUploadHandler(e)}
+          type="file"
+          className={style.inputFile}
+        />
+      </label>}
+  </div> :
+
+
+    <div
+    onDragEnter={(e) => dragEnterHandler(e)}
+    onDragOver={(e) => dragEnterHandler(e)}
+    onDragLeave={(e) => dragLeaveHandler(e)}
+    onDrop={(e) => dropHandler(e)}
+    className={style.labelFile}
+  >
+    Drop files here
+  </div>
+  }
+    {fileURL && <div><img src={`${URLWithoutGQL}/${fileURL}`} /></div>}
+  </div>);
+
 };

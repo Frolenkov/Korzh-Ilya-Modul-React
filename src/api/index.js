@@ -227,7 +227,7 @@ export const getChatById = (id) => {
 `;
   return gql(ChatFind, { "query": `[{ "_id": "${id}" }]`});
 };
-export const getMessagesByChatId = (chatId) => {
+export const getMessagesByChatId = (chatId, skip,limit) => {
   const MessageFind = `query ($query: String) {
   MessageFind(query: $query) {
     _id
@@ -242,7 +242,7 @@ export const getMessagesByChatId = (chatId) => {
     media{url}
   }
 }`;
-  return gql(MessageFind, { "query": `[{ "chat._id": "${chatId}" }, {  "skip": [0],  "limit": [100]}]` });
+return gql(MessageFind, { "query": `[{ "chat._id": "${chatId}" }, {  "skip": [${skip}],  "limit": [${limit}]}]` });
 };
 
 export const getMessageByMessageId = (messageId) => {

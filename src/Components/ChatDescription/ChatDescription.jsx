@@ -1,11 +1,11 @@
 import { Link, useLocation } from 'react-router-dom';
 import style from '../AsidePanel/AsidePanel.module.css';
 import { Avatar } from '@mui/material';
-import { URLWithoutGQL, URL } from '../../api/gql';
 import { useRef, useState, useEffect } from 'react';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { deleteChatAction } from '../../Store/chatReducer';
 import { useDispatch, useSelector } from 'react-redux';
+import { URLWithoutGQL } from '../../constants';
 
 export const ChatDescription = ({ chat }) => {
 
