@@ -227,6 +227,61 @@ export const getChatById = (id) => {
 `;
   return gql(ChatFind, { "query": `[{ "_id": "${id}" }]`});
 };
+
+export const createImgById = (chatId, imgId) => {
+  const q = `mutation($message: MessageInput){
+  MessageUpsert(message: $message){
+   _id
+    text            
+    chat{
+      createdAt
+    lastModified
+      
+    lastMessage{
+      text
+      media{url}
+          }
+      
+      members{
+        _id
+        login
+        nick
+        avatar{
+          url
+        }
+        
+      }
+      avatar{
+        url
+      }
+    }  
+    
+    media{
+      type
+      url    
+    }    
+    
+    owner{
+      _id
+    login
+    nick
+    avatar{
+      url
+    }
+    }
+  }
+}
+`;
+  return gql(q, {
+    "message": {
+      "chat": {
+        "_id": chatId
+      },
+      "media": {"_id": imgId}
+    }
+  });
+};
+
 export const getMessagesByChatId = (chatId, skip,limit) => {
   const MessageFind = `query ($query: String) {
   MessageFind(query: $query) {
@@ -262,4 +317,14 @@ export const getMessageByMessageId = (messageId) => {
 }`;
   return gql(MessageFindOne, { "query": `[{ "_id": "${messageId}" }]` });
 };
+
+
+export const getCountMessagesByChatId = (chatId) => {
+  const MessageCount = `query count ($query: String){
+  MessageCount(query:$query)
+}`;
+  return gql(MessageCount, { "query": `[{ "chat._id": "${chatId}" }]` });
+};
+
+
 

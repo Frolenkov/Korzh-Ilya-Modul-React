@@ -13,12 +13,13 @@ export const ChatDescription = ({ chat }) => {
   const location = useLocation();
 
   // console.log('chat s opisaniyz', chat );
-  const  login  = chat?.members[0]?.login;
+  const login = chat?.members[0]?.login;
   const [isActive, setIsActive] = useState(false);
   const avatar = URLWithoutGQL + "/" + chat?.members[0]?.avatar?.url;
 
   const chatId = chat?._id;
   const lastMessage = chat?.lastMessage?.text;
+
   const memberId = useSelector((state) => state?.auth?.payload?.sub?.id);
 
   const selectedChat = () => {
@@ -33,26 +34,24 @@ export const ChatDescription = ({ chat }) => {
     setIsActive(location.pathname === `/SecondPage/${chatId}`);
   }, [location.pathname]);
 
-  return (
-    <div onClick={() => selectedChat(chatId)}>
-      <Link
-        className={`${style.personNick} ${isActive ? style.active : ''}`}
-        to={`/SecondPage/${chatId}`}
-      >
-        <Avatar src={avatar}>{login.slice(0, 2)}</Avatar>
-        <div className={style.nickAndLastMessage}>
-          <span>{chat.members.length > 2 ? "group" : login}</span>
-          {lastMessage ? <span>{lastMessage}</span> : ''}
-        </div>
-        <DeleteOutlineIcon
-          className={style.trashBasket}
-          onClick={() => {
-            deleteChat(memberId, chatId);
-          }}
-        />
-      </Link>
-    </div>
-  );
+  return (<div onClick={() => selectedChat(chatId)}>
+    <Link
+      className={`${style.personNick} ${isActive ? style.active : ''}`}
+      to={`/SecondPage/${chatId}`}
+    >
+      <Avatar src={avatar}>{login.slice(0, 2)}</Avatar>
+      <div className={style.nickAndLastMessage}>
+        <span className={style.login}>{chat.members.length > 2 ? "group" : login} </span>
+        {lastMessage ? <span className={style.lastMessage}>{`${lastMessage.slice(0, 8)}...`}</span> : ''}
+      </div>
+      <DeleteOutlineIcon
+        className={style.trashBasket}
+        onClick={() => {
+          deleteChat(memberId, chatId);
+        }}
+      />
+    </Link>
+  </div>);
 };
 
 

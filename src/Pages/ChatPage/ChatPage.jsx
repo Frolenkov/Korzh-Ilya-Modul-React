@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { createMessage, getMessagesByChatId } from '../../api';
+import { createMessage, getCountMessagesByChatId, getMessagesByChatId } from '../../api';
 import { addMessages } from '../../Store/chatReducer';
 import { actionPromise } from '../../Store/promiseReduser';
 import { AsidePanel } from '../../Components/AsidePanel/AsidePanel';
@@ -24,9 +24,12 @@ export const ChatPage = () => {
   const messages = useSelector((state) => state?.chat[chatId]?.messages);
   const userId = useSelector((state) => state?.promise?.promiseGetUserById?.payload?.data?.UserFindOne?._id);
   const userPromise = useSelector((state) => state?.promise?.promiseGetUserById);
+  const messagesCount = useSelector((state) => state?.promise?.promiseCountMessagesByChatId?.payload?.data?.MessageCount);
+  //console.log(messagesCount);
 
-  const sendMessage = async (value, chatId) => {
-    const dataMessage = await dispatch(actionPromise('createMessage', createMessage(chatId, value)));
+  const sendMessage = (value, chatId) => {
+    const text=value.trim()
+    dispatch(actionPromise('createMessage', createMessage(chatId, text)));
     setValue('');
   };
 
@@ -34,10 +37,12 @@ export const ChatPage = () => {
 
   useEffect(() => {
     if (userPromise?.status === 'FULFILLED') {
+      setSkipMessages((prevState) => 0);
       (async () => {
-        const dataMessages = await dispatch(actionPromise('messageByChatId', getMessagesByChatId(chatId, skipMessages+ LIMIT_MESSAGES, LIMIT_MESSAGES)));
+        const dataMessages = await dispatch(actionPromise('messageByChatId', getMessagesByChatId(chatId, 0, LIMIT_MESSAGES)));
         const messages = dataMessages?.data?.MessageFind;
         dispatch(addMessages(messages, chatId));
+        dispatch(actionPromise("promiseCountMessagesByChatId", getCountMessagesByChatId(chatId)));
       })();
     }
   }, [chatId, dispatch, userPromise]);
@@ -46,62 +51,51 @@ export const ChatPage = () => {
     setSkipMessages((prevState) => prevState + LIMIT_MESSAGES);
     const dataMessages = await dispatch(actionPromise('messageByChatId', getMessagesByChatId(chatId, skipMessages + LIMIT_MESSAGES, LIMIT_MESSAGES)));
     const messages = dataMessages?.data?.MessageFind;
-
     dispatch(addMessages(messages, chatId));
   };
 
-  return (
-    <div className={style.pageWrapper}>
-      <AsidePanel />
+  return (<div className={style.pageWrapper}>
+    <AsidePanel />
 
-      <div className={style.chatWrapper}>
-        {messages?.length ? (
+    <div className={style.chatWrapper}>
+      {messages?.length ? (
 
-          <InfiniteScroll
-            dataLength={messages.length}
-            next={fetchData}
-            hasMore={true}
-            loader={<CircularProgress />}
+        <InfiniteScroll
+          dataLength={messages.length}
+          next={fetchData}
+          hasMore={messages.length !== messagesCount}
+          loader={""}
+          className={style.infiniteScrollContainer}
+        >
+
+          {messages.map((message) => (<div
+            key={message._id}
+            className={message.owner?._id !== userId ? style.messageWrapperGuest : style.messageWrapperUser}
           >
+            <div
+              className={message.owner?._id !== userId ? style.messageGuest : style.messageUser}
+            >
+              {message.text}
+            </div>
+            <Time time={message.createdAt} />
+          </div>))}
+        </InfiniteScroll>
 
-            {messages.map((message) => (
-              <div
-                key={message._id}
-                className={
-                  message.owner?._id !== userId
-                    ? style.messageWrapperGuest
-                    : style.messageWrapperUser
-                }
-              >
-                <div
-                  className={
-                    message.owner?._id !== userId
-                      ? style.messageGuest
-                      : style.messageUser
-                  }
-                >
-                  {message.text}
-                </div>
-                <Time time={message.createdAt} />
-              </div>
-            ))}
-          </InfiniteScroll>
-        ) : null}
-
-        <div className={style.inputWrapper}>
-          <InputChat
-            value={value}
-            setValue={setValue}
-            text="message"
-            sx={{ width: '100%' }}
-          />
-          <SendIcon
-            fontSize="large"
-            className={style.sendIMG}
-            onClick={() => sendMessage(value, chatId)}
-          />
-        </div>
+      ) : null}
+      <div className={style.inputWrapper}>
+        <InputChat
+          value={value}
+          setValue={setValue}
+          text="message"
+          sx={{ width: '100%' }}
+        />
+        <SendIcon
+          fontSize="large"
+          className={style.sendIMG}
+          onClick={() => sendMessage(value, chatId)}
+        />
       </div>
+
     </div>
-  );
+  </div>);
 };

@@ -35,8 +35,10 @@ export const AsidePanel = () => {
       {status === 'PENDING' || !status ?
         (<CircularProgress />) :
         (<>
-          <CreateChat />
-          <Exit />
+          <div className={style.StickyContainer}>
+            <CreateChat />
+            <Exit />
+          </div>
           {Object.keys(chats).length ?
             (Object.keys(chats).reverse().map(key => (
               <ChatDescription key={key} chat={chats[key]} />
