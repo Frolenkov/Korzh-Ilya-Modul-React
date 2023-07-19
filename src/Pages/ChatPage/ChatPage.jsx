@@ -14,8 +14,6 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import { CircularProgress } from '@mui/material';
 import { LIMIT_MESSAGES } from '../../constants';
 
-// ... (all imports remain the same)
-
 export const ChatPage = () => {
   const [value, setValue] = useState('');
   const [skipMessages, setSkipMessages] = useState(0);
@@ -42,50 +40,53 @@ export const ChatPage = () => {
         dispatch(addMessages(messages, chatId));
       })();
     }
-  }, [chatId, dispatch, userPromise, skipMessages]); // Include skipMessages in the dependency array.
+  }, [chatId, dispatch, userPromise, skipMessages]);
 
   const fetchData = async () => {
+    setSkipMessages((prevState) => prevState + LIMIT_MESSAGES);
     const dataMessages = await dispatch(actionPromise('messageByChatId', getMessagesByChatId(chatId, skipMessages, LIMIT_MESSAGES)));
-    const newMessages = dataMessages?.data?.MessageFind;
-    dispatch(addMessages(newMessages, chatId));
-    setSkipMessages((prevState) => prevState + LIMIT_MESSAGES); // Update skipMessages after fetching new messages.
+    const messages = dataMessages?.data?.MessageFind;
+    dispatch(addMessages(messages, chatId));
   };
 
   console.log(messages);
 
-  return (
-    <div className={style.pageWrapper}>
+  return (<div className={style.pageWrapper}>
       <AsidePanel />
-      {messages?.length ? (
-        <InfiniteScroll
-          dataLength={messages.length}
-          next={fetchData}
-          hasMore={true}
-          loader={<CircularProgress />}
-          style={{ width: '100%' }}
-        >
-          <div className={style.chatWrapper}>
-            {messages.map((message) => (
-              <div
+      <InfiniteScroll
+        dataLength={messages?.length || 0}
+        next={fetchData}
+        hasMore={true}
+        loader={<CircularProgress />}
+        style={{ width: '100%' }}
+      >
+        <div className={style.chatWrapper}>
+          {messages?.length ? (messages.map((message) => (<div
                 key={message._id}
                 className={message.owner?._id !== userId ? style.messageWrapperGuest : style.messageWrapperUser}
               >
-                <div className={message.owner?._id !== userId ? style.messageGuest : style.messageUser}>
-                  {message.text}
+                <div
+                  className={message.owner?._id !== userId ? style.messageGuest : style.messageUser}
+                >
+                  {' '}
+                  {message.text}{' '}
                 </div>
                 <Time time={message.createdAt} />
-              </div>
-            ))}
-          </div>
-          <div className={style.inputWrapper}>
-            <InputChat value={value} setValue={setValue} text="message" sx={{ width: '100%' }} />
-            <SendIcon fontSize="large" className={style.sendIMG} onClick={() => sendMessage(value, chatId)} />
-          </div>
-        </InfiniteScroll>
-      ) : (
-        ''
-      )}
-    </div>
-  );
+              </div>))) : null}
+        </div>
+      </InfiniteScroll>
+      <div className={style.inputWrapper}>
+        <InputChat
+          value={value}
+          setValue={setValue}
+          text="message"
+          sx={{ width: '100%' }}
+        />
+        <SendIcon
+          fontSize="large"
+          className={style.sendIMG}
+          onClick={() => sendMessage(value, chatId)}
+        />
+      </div>
+    </div>);
 };
-
