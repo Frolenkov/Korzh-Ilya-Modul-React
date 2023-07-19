@@ -35,58 +35,73 @@ export const ChatPage = () => {
   useEffect(() => {
     if (userPromise?.status === 'FULFILLED') {
       (async () => {
-        const dataMessages = await dispatch(actionPromise('messageByChatId', getMessagesByChatId(chatId, skipMessages, LIMIT_MESSAGES)));
+        const dataMessages = await dispatch(actionPromise('messageByChatId', getMessagesByChatId(chatId, skipMessages+ LIMIT_MESSAGES, LIMIT_MESSAGES)));
         const messages = dataMessages?.data?.MessageFind;
         dispatch(addMessages(messages, chatId));
       })();
     }
-  }, [chatId, dispatch, userPromise, skipMessages]);
+  }, [chatId, dispatch, userPromise]);
 
   const fetchData = async () => {
     setSkipMessages((prevState) => prevState + LIMIT_MESSAGES);
-    const dataMessages = await dispatch(actionPromise('messageByChatId', getMessagesByChatId(chatId, skipMessages, LIMIT_MESSAGES)));
+    const dataMessages = await dispatch(actionPromise('messageByChatId', getMessagesByChatId(chatId, skipMessages + LIMIT_MESSAGES, LIMIT_MESSAGES)));
     const messages = dataMessages?.data?.MessageFind;
+
     dispatch(addMessages(messages, chatId));
   };
 
-  console.log(messages);
-
-  return (<div className={style.pageWrapper}>
+  return (
+    <div className={style.pageWrapper}>
       <AsidePanel />
-      <InfiniteScroll
-        dataLength={messages?.length || 0}
-        next={fetchData}
-        hasMore={true}
-        loader={<CircularProgress />}
-        style={{ width: '100%' }}
-      >
-        <div className={style.chatWrapper}>
-          {messages?.length ? (messages.map((message) => (<div
+
+      <div className={style.chatWrapper}>
+        {messages?.length ? (
+
+          <InfiniteScroll
+            dataLength={messages.length}
+            next={fetchData}
+            hasMore={true}
+            loader={<CircularProgress />}
+          >
+
+            {messages.map((message) => (
+              <div
                 key={message._id}
-                className={message.owner?._id !== userId ? style.messageWrapperGuest : style.messageWrapperUser}
+                className={
+                  message.owner?._id !== userId
+                    ? style.messageWrapperGuest
+                    : style.messageWrapperUser
+                }
               >
                 <div
-                  className={message.owner?._id !== userId ? style.messageGuest : style.messageUser}
+                  className={
+                    message.owner?._id !== userId
+                      ? style.messageGuest
+                      : style.messageUser
+                  }
                 >
-                  {' '}
-                  {message.text}{' '}
+                  {message.text}
                 </div>
                 <Time time={message.createdAt} />
-              </div>))) : null}
+              </div>
+            ))}
+          </InfiniteScroll>
+        ) : null}
+
+        <div className={style.inputWrapper}>
+          <InputChat
+            value={value}
+            setValue={setValue}
+            text="message"
+            sx={{ width: '100%' }}
+          />
+          <SendIcon
+            fontSize="large"
+            className={style.sendIMG}
+            onClick={() => sendMessage(value, chatId)}
+          />
         </div>
-      </InfiniteScroll>
-      <div className={style.inputWrapper}>
-        <InputChat
-          value={value}
-          setValue={setValue}
-          text="message"
-          sx={{ width: '100%' }}
-        />
-        <SendIcon
-          fontSize="large"
-          className={style.sendIMG}
-          onClick={() => sendMessage(value, chatId)}
-        />
       </div>
-    </div>);
+    </div>
+  );
 };
