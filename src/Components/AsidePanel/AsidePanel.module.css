@@ -1,4 +1,5 @@
 .AsidePanel {
+  position: fixed;
   display: flex;
   flex-direction: column;
   align-items: center;

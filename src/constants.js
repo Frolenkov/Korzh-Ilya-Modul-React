@@ -1,4 +1,4 @@
-export const LIMIT_MESSAGES = 30
+export const LIMIT_MESSAGES = 15
 
 ;
 export const URL = "http://chat.ed.asmer.org.ua/graphql";

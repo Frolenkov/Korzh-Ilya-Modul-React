@@ -1,17 +1,17 @@
 .pageWrapper {
-  display: flex;
   width: 100%;
   height: 100%;
   color: white;
-  overflow: hidden;
-
+  position: relative;
 }
 
 .chatWrapper {
-  width: 100%;
+  position: relative;
+  width: calc(100% - 300px);
   height: 100%;
-  overflow-y: auto;
+  margin-left: 300px;
 }
+
 .chatWrapper::-webkit-scrollbar {
   width: 4px;
 }
@@ -29,31 +29,33 @@
   background-color: #555;
 }
 
-.infiniteScrollContainer {
-  width: 100%;
-  height: 100%;
-  overflow-y: auto;
+.messageWrapper {
   display: flex;
-  flex-direction: column;
+  width: 100%;
+  padding: 5px;
+  margin-bottom: 20px;
 }
 
-
+.messageWrapper:last-child {
+  margin-bottom: 100px;
+}
 
 .messageWrapperUser {
-  display: flex;
-  flex-direction: column;
-  align-self: flex-end;
-  align-items: flex-end;
+  justify-content: flex-end;
+}
+
+.messageWrapperGuest {
+  justify-content: flex-start;
+}
+
+.messageBody {
+  width: 50%;
   border: 1px solid white;
 
   border-radius: 5px;
   box-shadow: 0 0 5px 5px rgba(0, 100, 150, 0.2);
 
   padding: 10px 20px;
-  margin: 10px 20px;
-  gap: 5px;
-  max-width: 50%;
-  min-width: 100px;
 }
 
 .messageUser {
@@ -61,25 +63,6 @@
   overflow-wrap: break-word;
   width: 100%;
   text-align: right;
-
-
-}
-
-.messageWrapperGuest {
-  display: flex;
-  flex-direction: column;
-  align-self: flex-start;
-  align-items: flex-start;
-  border: 1px solid white;
-
-  border-radius: 5px;
-  box-shadow: 0 0 5px 5px rgba(50, 150, 1200, 0.2);
-
-  padding: 10px 20px;
-  margin: 10px 20px;
-  gap: 5px;
-  max-width: 50%;
-  min-width: 100px;
 }
 
 .messageGuest {
@@ -87,14 +70,15 @@
   overflow-wrap: break-word;
   width: 100%;
   text-align: left;
-
+  padding: 10px 20px;
+  color: #fff;
 }
 
 .inputWrapper {
-  position: sticky;
+  position: fixed;
+  width: calc(100% - 300px);
   bottom: 0;
   z-index: 1;
-  width: 100%;
   display: flex;
   justify-content: space-around;
   align-items: center;

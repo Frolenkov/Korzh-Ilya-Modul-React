@@ -12,11 +12,15 @@ export const chatsReducer = (state = {}, action) => {
     return { ...state, [action.chat._id]: action.chat };
   }
 
-  if (action.type === 'ADD_MESSAGES' && Object.keys(state).length) {
+  if (action.type === 'ADD_MESSAGES') {
     const { chatId, messages } = action;
     const chat = state[chatId];
-    const updatedChat = { ...chat, messages: [...messages] };
-    return { ...state, [chatId]: updatedChat };
+    if (chat) {
+      const chatMessages = chat.messages || []
+      const updatedChat = { ...chat, messages: [...chatMessages, ...messages] };
+      return { ...state, [chatId]: updatedChat };
+    }
+    return state;
   }
 
   if (action.type === 'ADD_MESSAGE') {
